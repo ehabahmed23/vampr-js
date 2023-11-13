@@ -40,8 +40,77 @@ class Vampire {
     return false;
   }
 
-  /** Tree traversal methods **/
+  // Returns the vampire object with that name, or null if no vampire exists with that name
+  vampireWithName(name) {
+    
+    console.log('name being searched', name)
+
+    if (this.name === name) {
+      console.log('found a match!', this.name);
+      return this;
+    }
+    
+    for (const offspring of this.offspring) {
+      console.log('offspring', offspring.name);
+      const vampWeLookingFor = offspring.vampireWithName(name);
+      if (vampWeLookingFor) {
+        return vampWeLookingFor;
+      }
+    }
+
+    return null;
+    
   }
+
+  // Returns the total number of vampires that exist
+  get totalDescendents() {
+     // set counter to zero
+     let counter = 0;
+     console.log('current iteration:', this.name);
+     // for the first 'root' vamp (do not) add one to counter 
+    
+     // traverse through each node after the root vamp
+     for (const offspring of this.offspring) {
+       counter += 1; //omg it was this. Put counter in node iteration loop.
+       // on each node add to the counter
+       // remember to assign each recursive case a variable
+       const depthCounter = offspring.totalDescendents;
+       // counter = counter + the variable --> continue iterating.
+       counter += depthCounter;
+     }
+     
+     console.log('iteration:', this.name, 'counter just before return:', counter);
+     return counter;
+   
+  }
+
+  // Returns an array of all the vampires that were converted after 1980
+  get allMillennialVampires() {
+     console.log('current iteration:', this.name);
+    // create global empty array variable for vampires we're looking for
+    // must use let instead of const bc of .concat() method we use. .push() will return nested array.
+    let vampsConvertedBefore1980 = [];
+    // create conditional if statement for vampires and add to array if they were converted after 1980
+    if (this.yearConverted > 1980) {
+      vampsConvertedBefore1980.push(this);
+    }
+
+    // iterate over each descendant via depth first traversal
+    for (const offspring of this.offspring) {
+      // create variable for whatever array is returned from recursive case 
+      const depthArray = offspring.allMillennialVampires;
+      // add recursive case array to global array
+      vampsConvertedBefore1980 = vampsConvertedBefore1980.concat(depthArray);
+    }
+
+    // after traversal, return global array.
+    // console.log('before final return:', vampsConvertedBefore1980);
+    return vampsConvertedBefore1980;
+  }
+  }
+
+  /** Tree traversal methods **/
+  
 
   /** Stretch **/
 
